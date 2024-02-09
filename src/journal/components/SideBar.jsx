@@ -12,8 +12,10 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 
 export const SideBar = ({ drawerWidth = 240 }) => {
+  const { displayName } = useSelector((state) => state.auth);
   return (
     <Box
       component="nav"
@@ -32,7 +34,7 @@ export const SideBar = ({ drawerWidth = 240 }) => {
       >
         <Toolbar>
           <Typography variant="h6" noWrap component="div">
-            Bruno Jimenez
+            {displayName}
           </Typography>
         </Toolbar>
         <Divider />
@@ -54,8 +56,6 @@ export const SideBar = ({ drawerWidth = 240 }) => {
             </ListItem>
           ))}
         </List>
-
-        
       </Drawer>
     </Box>
   );
