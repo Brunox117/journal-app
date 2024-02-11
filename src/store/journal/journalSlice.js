@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const journalSlice = createSlice({
   name: "journal",
   initialState: {
-    isSaving: true,
+    isSaving: false,
     messageSaved: "",
     notes: [],
     active: null,
@@ -16,21 +16,59 @@ export const journalSlice = createSlice({
     // }
   },
   reducers: {
-    addNewEmptyNote: (state, action) => {},
-    setActiveNote: (state, action) => {},
-    setNotes: (state, action) => {},
-    setSaving: (state) => {},
-    updateNote: (state, action) => {},
-    deleteNoteById: (state, action) => {},
+    savingNewNote: (state) => {
+      state.isSaving = true;
+    },
+    addNewEmptyNote: (state, action) => {
+      state.notes.push(action.payload);
+      state.isSaving = false;
+    },
+    setActiveNote: (state, action) => {
+      state.active = action.payload;
+      state.messageSaved = "";
+    },
+    setNotes: (state, action) => {
+      state.notes = action.payload;
+    },
+    setSaving: (state) => {
+      state.isSaving = true;
+      state.messageSaved = "";
+      //TODO mensaje de error.....
+    },
+    setPhotosToActiveNote: (state, action) => {
+      state.active.imageUrls = [...state.active.imageUrls, ...action.payload];
+      state.isSaving = false;
+    },
+    clearNotesLogout: (state) => {
+      (state.isSaving = false), (state.messageSaved = ""), (state.notes = []);
+      state.active = null;
+    },
+    noteUpdated: (state, action) => {
+      state.isSaving = false;
+      state.notes = state.notes.map((note) => {
+        if (note.id === action.payload.id) {
+          return action.payload;
+        }
+        return note;
+      });
+      state.messageSaved = `${action.payload.title} actualizada correctamente`;
+    },
+    deleteNoteById: (state, action) => {
+      state.active = null;
+      state.notes = state.notes.filter((note) => note.id !== action.payload);
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
 export const {
   addNewEmptyNote,
+  clearNotesLogout,
+  deleteNoteById,
+  noteUpdated,
+  savingNewNote,
   setActiveNote,
   setNotes,
+  setPhotosToActiveNote,
   setSaving,
-  updateNote,
-  deleteNoteById,
 } = journalSlice.actions;
